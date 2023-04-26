@@ -1,0 +1,8 @@
+host: localhost:3000
+info:
+  contact: {}
+  description: This is the api doucmentation for subway surfers
+  title: Subway surfers api
+  version: "1.0"
+paths: {}
+swagger: "2.0"
