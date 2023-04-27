@@ -2,22 +2,16 @@ package provider
 
 import (
 	"fmt"
-	"main/server/model"
-	"main/server/response"
 	"os"
+	"subway/server/model"
+	"subway/server/response"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type Claims struct {
-	Id   string `json:"id"`
-	Role string `json:"role"`
-	jwt.RegisteredClaims
-}
-
-//Generate JWT Token
-func 	GenerateToken(claims model.Claims, context *gin.Context) string {
+// Generate JWT Token
+func GenerateToken(claims model.Claims, context *gin.Context) string {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -29,9 +23,9 @@ func 	GenerateToken(claims model.Claims, context *gin.Context) string {
 	return tokenString
 }
 
-//Decode Token function
-func DecodeToken(tokenString string) (Claims, error) {
-	claims := &Claims{}
+// Decode Token function
+func DecodeToken(tokenString string) (*model.Claims, error) {
+	claims := &model.Claims{}
 
 	parsedToken, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -41,51 +35,51 @@ func DecodeToken(tokenString string) (Claims, error) {
 	})
 
 	if err != nil || !parsedToken.Valid {
-		return *claims, fmt.Errorf("invalid or expired token")
+		return nil, fmt.Errorf("invalid or expired token")
 	}
 
-	return *claims, nil
+	return claims, nil
 }
 
-//Set cookie handler
-func SetCookie(context *gin.Context, tokenString string) {
+// Set cookie handler
+// func SetCookie(context *gin.Context, tokenString string) {
 
-	context.SetCookie(
-		"cookie",
-		tokenString,
-		7200,
-		"/",
-		"localhost",
-		false,
-		true,
-	)
+// 	context.SetCookie(
+// 		"cookie",
+// 		tokenString,
+// 		7200,
+// 		"/",
+// 		"localhost",
+// 		false,
+// 		true,
+// 	)
 
-	response.ShowResponse(
-		"Success",
-		200,
-		"Cookies saved successfully",
-		"",
-		context,
-	)
-}
+// 	response.ShowResponse(
+// 		"Success",
+// 		200,
+// 		"Cookies saved successfully",
+// 		"",
+// 		context,
+// 	)
+// }
 
-//Delete cookie handler
-func DeleteCookie(context *gin.Context) {
-	context.SetCookie(
-		"cookie",
-		"",
-		-1,
-		"",
-		"",
-		false,
-		false,
-	)
+// // Delete cookie handler
+// func DeleteCookie(context *gin.Context) {
+// 	context.SetCookie(
+// 		"cookie",
+// 		"",
+// 		-1,
+// 		"",
+// 		"",
+// 		false,
+// 		false,
+// 	)
 
-	response.ShowResponse(
-		"Success",
-		200,
-		"Cookie deleted successfully",
-		"",
-		context,
-	)
-}
+// 	response.ShowResponse(
+// 		"Success",
+// 		200,
+// 		"Cookie deleted successfully",
+// 		"",
+// 		context,
+// 	)
+// }

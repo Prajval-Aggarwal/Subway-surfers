@@ -1,7 +1,7 @@
 package db
 
 import (
-	"main/server/model"
+	"subway/server/model"
 
 	"gorm.io/gorm"
 )

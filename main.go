@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"main/server"
-	"main/server/db"
+	"subway/server"
+	"subway/server/db"
 
 	"os"
 

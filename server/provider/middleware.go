@@ -1,75 +1,43 @@
 package provider
 
 import (
-	"fmt"
-	"main/server/response"
+	"subway/server/db"
+	"subway/server/model"
+	"subway/server/response"
+	"subway/server/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-func UserAuthorization(c *gin.Context) {
-
-	fmt.Println("inside middleware")
-	token, err := c.Request.Cookie("cookie")
+func PlayerAuthentication(ctx *gin.Context) {
+	tokenString, err := utils.GetTokenFromAuthHeader(ctx)
+	var playerSession model.Session
 	if err != nil {
-		response.ErrorResponse(c, 400, err.Error())
-		c.Abort()
+		response.ErrorResponse(ctx, 404, err.Error())
+		ctx.Abort()
 		return
 	}
 
-	claims, err := DecodeToken(token.Value)
+	claims, err := DecodeToken(tokenString)
 	if err != nil {
-		response.ErrorResponse(c, 401, err.Error())
-		c.Abort()
-		return
-	}
-	err = claims.Valid()
-	if err != nil {
-		response.ErrorResponse(c, 401, err.Error())
-		c.Abort()
-		return
-	}
-	if claims.Role == "user" {
-		c.Next()
-	} else {
-		response.ErrorResponse(c, 403, "Access Denied")
-		c.Abort()
+		response.ErrorResponse(ctx, 401, err.Error())
+		ctx.Abort()
 		return
 	}
 
-}
-
-func AdminAuthorization(c *gin.Context) {
-
-	fmt.Println("inside middleware")
-	token, err := c.Request.Cookie("cookie")
-	if err != nil {
-
-		response.ErrorResponse(c, 400, err.Error())
-		c.Abort()
-		return
-
-	}
-
-	claims, err := DecodeToken(token.Value)
-	if err != nil {
-		response.ErrorResponse(c, 401, err.Error())
-		c.Abort()
+	if !db.RecordExist("sessions", "p_id", claims.P_Id) {
+		response.ErrorResponse(ctx, 401, "Unauthorized")
+		ctx.Abort()
 		return
 	}
-	err = claims.Valid()
-	if err != nil {
-		response.ErrorResponse(c, 401, err.Error())
-		c.Abort()
+
+	db.FindById(&playerSession, claims.P_Id, "p_id")
+
+	if tokenString != playerSession.Token {
+		response.ErrorResponse(ctx, 401, "Unauthorized")
+		ctx.Abort()
 		return
 	}
-	if claims.Role == "admin" {
-		c.Next()
-	} else {
-		response.ErrorResponse(c, 403, "Access Denied")
-		c.Abort()
-		return
-
-	}
-
+	ctx.Set("playerId", claims.P_Id)
+	ctx.Next()
 }
