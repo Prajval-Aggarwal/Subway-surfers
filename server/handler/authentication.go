@@ -39,16 +39,14 @@ func LoginHandler(ctx *gin.Context) {
 
 func LogoutHandler(ctx *gin.Context) {
 
-	var logoutRequest request.LogoutRequest
-
-	utils.RequestDecoding(ctx, &logoutRequest)
-
-	err := validation.CheckValidation(&logoutRequest)
-	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+	playerID, exists := ctx.Get("playerId")
+	fmt.Println("player id is :", playerID)
+	if !exists {
+		response.ErrorResponse(ctx, 401, "Unauthorised")
 		return
 	}
-	authentication.LogoutService(ctx, logoutRequest)
+
+	authentication.LogoutService(ctx, playerID.(string))
 }
 
 func UpdatePasswordHandler(ctx *gin.Context) {
@@ -92,3 +90,32 @@ func UpdateNameHandler(ctx *gin.Context) {
 }
 
 //Add forgot password handler
+
+func ForgotPasswordHandler(ctx *gin.Context) {
+	var forgotRequest request.ForgotPassRequest
+	utils.RequestDecoding(ctx, &forgotRequest)
+	fmt.Println("forgot", forgotRequest)
+	err := validation.CheckValidation(&forgotRequest)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
+
+	authentication.ForgotPassService(ctx, forgotRequest)
+}
+
+func ResetPasswordHandler(ctx *gin.Context) {
+	tokenString := ctx.Request.URL.Query().Get("token")
+	var password request.UpdatePasswordRequest
+
+	utils.RequestDecoding(ctx, &password)
+
+	err := validation.CheckValidation(&password)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
+
+	authentication.ResetPasswordService(ctx, tokenString, password)
+
+}

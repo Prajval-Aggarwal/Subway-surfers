@@ -1,6 +1,8 @@
 package authentication
 
 import (
+	"errors"
+	"fmt"
 	"subway/server/db"
 	"subway/server/model"
 	"subway/server/provider"
@@ -10,10 +12,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	gomail "gopkg.in/mail.v2"
+	"gorm.io/gorm"
 )
 
 func RegisterService(ctx *gin.Context, registerRequest request.RegisterRequest) {
 	var player model.Player
+	var playerCoins model.PlayerCoins
 	player.P_Name = registerRequest.P_Name
 	player.Email = registerRequest.Email
 
@@ -33,6 +38,13 @@ func RegisterService(ctx *gin.Context, registerRequest request.RegisterRequest) 
 		response.ErrorResponse(ctx, 500, err.Error())
 		return
 	}
+	playerCoins.P_ID = player.P_ID
+
+	err = db.CreateRecord(&playerCoins)
+	if err != nil {
+		response.ErrorResponse(ctx, 500, err.Error())
+		return
+	}
 
 	response.ShowResponse("Success", 201, "Player registered successfully", &player, ctx)
 
@@ -41,7 +53,11 @@ func RegisterService(ctx *gin.Context, registerRequest request.RegisterRequest) 
 func LoginService(ctx *gin.Context, loginRequest request.LoginRequest) {
 	var playerDetails model.Player
 	var tokenClaims model.Claims
-	db.FindById(&playerDetails, loginRequest.Email, "emial")
+	if !db.RecordExist("players", "email", loginRequest.Email) {
+		response.ErrorResponse(ctx, 404, "Player needs to register to proceed with login..")
+		return
+	}
+	db.FindById(&playerDetails, loginRequest.Email, "email")
 
 	//comapring password using bcrypt
 
@@ -52,7 +68,7 @@ func LoginService(ctx *gin.Context, loginRequest request.LoginRequest) {
 	// }
 
 	if playerDetails.Password != loginRequest.Password {
-		response.ErrorResponse(ctx, 401, "Unauthorised")
+		response.ErrorResponse(ctx, 401, "Invalid credentials")
 		return
 	}
 	expirationTime := time.Now().Add(time.Minute * 10)
@@ -68,23 +84,34 @@ func LoginService(ctx *gin.Context, loginRequest request.LoginRequest) {
 		P_Id:  playerDetails.P_ID,
 		Token: tokenString,
 	}
-	err := db.CreateRecord(&session)
-	if err != nil {
 
-		response.ErrorResponse(ctx, 500, err.Error())
-		return
+	//if record exists then update the session token else ccreate the session token
+	if db.RecordExist("sessions", "p_id", playerDetails.P_ID) {
+		err := db.UpdateRecord(session, playerDetails.P_ID, "p_id").Error
+		if err != nil {
+			response.ErrorResponse(ctx, 500, err.Error())
+			return
+		}
+	} else {
+		err := db.CreateRecord(&session)
+		if err != nil {
+			response.ErrorResponse(ctx, 500, err.Error())
+			return
+		}
 	}
+
+	response.ShowResponse("Sucess", 200, "Login sucessfull", tokenString, ctx)
 	//creating login record
 
 }
 
-func LogoutService(ctx *gin.Context, logoutRequest request.LogoutRequest) {
+func LogoutService(ctx *gin.Context, playerId string) {
 	var sessionDetails model.Session
-	if !db.RecordExist("sessions", "p_id", logoutRequest.P_Id) {
+	if !db.RecordExist("sessions", "p_id", playerId) {
 		response.ErrorResponse(ctx, 404, "Session for current user has already been ended")
 		return
 	}
-	err := db.DeleteRecord(&sessionDetails, logoutRequest.P_Id, "p_id")
+	err := db.DeleteRecord(&sessionDetails, playerId, "p_id")
 	if err != nil {
 		response.ErrorResponse(ctx, 500, err.Error())
 		return
@@ -129,4 +156,83 @@ func UpdateNameService(ctx *gin.Context, playerName request.UpdateNameRequest, p
 	}
 	response.ShowResponse("Success", 200, "Player name updated successfully", nil, ctx)
 
+}
+
+func ForgotPassService(ctx *gin.Context, forgotPassRequest request.ForgotPassRequest) {
+	expirationTime := time.Now().Add(time.Minute * 5)
+	var playerDetails model.Player
+	err := db.FindById(&playerDetails, forgotPassRequest.Email, "email")
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		response.ErrorResponse(ctx, 404, "Email is not registered")
+		return
+	} else if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
+
+	resetClaims := model.Claims{
+		P_Id: playerDetails.P_ID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+		},
+	}
+
+	tokenString := provider.GenerateToken(resetClaims, ctx)
+
+	resetSession := model.ResetSession{
+		P_ID:       playerDetails.P_ID,
+		ResetToken: tokenString,
+	}
+	err = db.CreateRecord(&resetSession)
+
+	if err != nil {
+		response.ErrorResponse(ctx, 500, err.Error())
+		return
+	}
+
+	//send mail
+	m := gomail.NewMessage()
+	m.SetHeader("From", "prajwal1711@gmail.com")
+
+	m.SetHeader("To", "namanagg59@gmail.com")
+	m.SetHeader("Subject", "Reset Password link")
+	link := "http://localhost:3000/reset-password?token=" + tokenString
+	body := fmt.Sprintf("<a href=\"%s\">Click here to reset your password</a>", link)
+
+	m.SetBody("text/html", body)
+
+	d := gomail.NewDialer("smtp.gmail.com", 587, "prajwal1711@gmail.com", "agovqanwcgnewxmt")
+
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+
+}
+
+func ResetPasswordService(ctx *gin.Context, tokenString string, password request.UpdatePasswordRequest) {
+
+	//decode the token and get the playerid
+	claims, err := provider.DecodeToken(tokenString)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
+	var resetSession model.ResetSession
+	db.FindById(&resetSession, claims.P_Id, "p_id")
+
+	if resetSession.ResetToken != tokenString {
+		response.ErrorResponse(ctx, 403, "Forbidden request")
+		return
+	}
+	//update password
+	UpdatePasswordService(ctx, password, claims.P_Id)
+
+	//delete the record from reset session table
+
+	err = db.DeleteRecord(&resetSession, claims.P_Id, "p_id")
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 }

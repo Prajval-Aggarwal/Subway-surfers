@@ -22,3 +22,7 @@ type UpdatePasswordRequest struct {
 type UpdateNameRequest struct {
 	P_Name string `json:"playerName" validate:"required"`
 }
+
+type ForgotPassRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}

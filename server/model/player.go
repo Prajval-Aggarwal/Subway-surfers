@@ -8,7 +8,7 @@ import (
 
 type Player struct {
 	P_ID          string         `json:"playerId" gorm:"default:uuid_generate_v4()"`
-	P_Name        string         `json:"playerName"`
+	P_Name        string         `json:"playerName" gorm:"unique"`
 	Email         string         `json:"email" gorm:"unique"`
 	Password      string         `json:"password" `
 	HighScore     int64          `json:"highScore"`
