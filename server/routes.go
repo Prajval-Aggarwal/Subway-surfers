@@ -21,7 +21,7 @@ func ConfigureRoutes(server *Server) {
 	server.engine.PATCH("/update-pass", provider.PlayerAuthentication, handler.UpdatePasswordHandler)
 	server.engine.PATCH("/update-name", provider.PlayerAuthentication, handler.UpdateNameHandler)
 	server.engine.POST("/forgot-password", handler.ForgotPasswordHandler)
-	server.engine.PATCH("reset-password", handler.ResetPasswordHandler)
+	server.engine.PATCH("/reset-password", handler.ResetPasswordHandler)
 
 	//player detail route
 	server.engine.GET("/show-player", handler.ShowPlayerDetailsHandler)

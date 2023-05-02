@@ -8,6 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//	@Description	Collet reward handler
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	response.Success
+//	@Failure		400	{object}	response.Error
+//	@Tags			Daily Reward
+//	@Router			/collect-reward [get]
 func RewardCollectedHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)

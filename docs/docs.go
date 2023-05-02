@@ -15,7 +15,637 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/buy-powerup": {
+            "post": {
+                "description": "Details of the power up bought",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Powerups"
+                ],
+                "parameters": [
+                    {
+                        "description": "Power Up bought details",
+                        "name": "Details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.BuyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/collect-reward": {
+            "get": {
+                "description": "Collet reward handler",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Daily Reward"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/end-game": {
+            "post": {
+                "description": "Ends the game",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Game"
+                ],
+                "parameters": [
+                    {
+                        "description": "Players record after game end",
+                        "name": "gameDetails",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.EndGameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "description": "Forgot password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "parameters": [
+                    {
+                        "description": "Players registers email",
+                        "name": "playerEmail",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ForgotPassRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Log in a player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "parameters": [
+                    {
+                        "description": "Details of the player",
+                        "name": "playerDetails",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "delete": {
+                "description": "Logs out a player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/register-player": {
+            "post": {
+                "description": "Register a player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "parameters": [
+                    {
+                        "description": "Details of the player",
+                        "name": "playerDetails",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "post": {
+                "description": "Reset password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "parameters": [
+                    {
+                        "description": "Players new password",
+                        "name": "NewPassword",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdatePasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-leaderboard": {
+            "get": {
+                "description": "Shows the leaderboard",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Leaderboard"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-player": {
+            "get": {
+                "description": "Show player details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Player"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-powerups": {
+            "post": {
+                "description": "Show Power ups",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Powerups"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-name": {
+            "patch": {
+                "description": "Updates the player name of the player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "parameters": [
+                    {
+                        "description": "New name of the player",
+                        "name": "newName",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateNameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-pass": {
+            "patch": {
+                "description": "Updates the password of the player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "parameters": [
+                    {
+                        "description": "New password of the player",
+                        "name": "newPassword",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdatePasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/use-powerup": {
+            "post": {
+                "description": "Details of the power up used",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Powerups"
+                ],
+                "parameters": [
+                    {
+                        "description": "Power Up used details",
+                        "name": "Details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PowerUpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "request.BuyRequest": {
+            "type": "object",
+            "required": [
+                "powerUpId",
+                "quantity"
+            ],
+            "properties": {
+                "powerUpId": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.EndGameRequest": {
+            "type": "object",
+            "required": [
+                "coinsCollected",
+                "distance"
+            ],
+            "properties": {
+                "coinsCollected": {
+                    "type": "integer"
+                },
+                "distance": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.ForgotPassRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.PowerUpRequest": {
+            "type": "object",
+            "required": [
+                "powerUpId"
+            ],
+            "properties": {
+                "powerUpId": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "playerName"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 8
+                },
+                "playerName": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdateNameRequest": {
+            "type": "object",
+            "required": [
+                "playerName"
+            ],
+            "properties": {
+                "playerName": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdatePasswordRequest": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Success": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it

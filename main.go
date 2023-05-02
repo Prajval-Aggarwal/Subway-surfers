@@ -10,10 +10,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// @title Subway surfers api
-// @version 1.0
-// @description This is the api doucmentation for subway surfers
-// @host localhost:3000
+//	@title			Subway surfers api
+//	@version		1.0
+//	@description	This is the api doucmentation for subway surfers
+//	@host			localhost:3000
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
