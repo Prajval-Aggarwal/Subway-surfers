@@ -1,6 +1,7 @@
 package powerups
 
 import (
+	"fmt"
 	"subway/server/db"
 	"subway/server/model"
 	"subway/server/request"
@@ -13,7 +14,7 @@ func ShowPowerUpsService(ctx *gin.Context) {
 	query := "SELECT * FROM power_ups;"
 	var powerups []model.PowerUp
 
-	err := db.RawQuery(query, powerups)
+	err := db.RawQuery(query, &powerups)
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
 		return
@@ -26,7 +27,7 @@ func ShowPowerUpsService(ctx *gin.Context) {
 func UsePowerUpService(ctx *gin.Context, playerID string, powerupRequest request.PowerUpRequest) {
 	query := "SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?;"
 	var playerPowerup model.PlayerPowerUps
-	err := db.RawQuery(query, playerPowerup, playerID, powerupRequest.PowerUp_Id)
+	err := db.RawQuery(query, &playerPowerup, playerID, powerupRequest.PowerUp_Id)
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
 		return
@@ -54,6 +55,8 @@ func BuyPowerupService(ctx *gin.Context, playerId string, BuyRequest request.Buy
 	//find the power up with that id calculate total amount
 	var powerUp model.PowerUp
 	var playerCoins model.PlayerCoins
+	var playerPowerups model.PlayerPowerUps
+	var exists bool
 	err := db.FindById(&powerUp, BuyRequest.PowerUp_Id, "power_up_id")
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
@@ -78,16 +81,23 @@ func BuyPowerupService(ctx *gin.Context, playerId string, BuyRequest request.Buy
 	}
 
 	//add the power ups to player_powerups table add or update
-	var playerPowerups model.PlayerPowerUps
-	var exists bool
+
 	query := "SELECT EXISTS(SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?)"
 	db.RawQuery(query, &exists, playerId, BuyRequest.PowerUp_Id)
 	if !exists {
+		fmt.Println("if worked")
 		playerPowerups.PowerUp_Id = BuyRequest.PowerUp_Id
 		playerPowerups.Quantity = BuyRequest.Quantity
 		db.CreateRecord(&playerPowerups)
 	} else {
-		playerPowerups.Quantity += BuyRequest.Quantity
+
+		query = "SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?;"
+		db.RawQuery(query, &playerPowerups, playerId, BuyRequest.PowerUp_Id)
+
+		fmt.Println("else worked")
+		fmt.Println("before player power up quantity is", playerPowerups.Quantity)
+		playerPowerups.Quantity = playerPowerups.Quantity + BuyRequest.Quantity
+		fmt.Println("player power up quantity is", playerPowerups.Quantity)
 		query = "UPDATE player_power_ups SET quantity=? WHERE p_id=? AND power_up_id=?;"
 
 		err = db.ExecuteQuery(query, playerPowerups.Quantity, playerId, BuyRequest.PowerUp_Id)

@@ -1,6 +1,9 @@
 package model
 
 type DailyReward struct {
-	Date    string `json:"date"`
-	PowerUp string `json:"powerUp"`
+	P_Id      string `json:"playerId"`
+	Date      string `json:"date"`
+	Quantity  int64  `json:"quantity"`
+	PowerUpId string `json:"powerUp"`
+	Status    string `json:"status"`
 }

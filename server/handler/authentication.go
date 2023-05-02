@@ -89,8 +89,6 @@ func UpdateNameHandler(ctx *gin.Context) {
 	authentication.UpdateNameService(ctx, playerName, playerID.(string))
 }
 
-//Add forgot password handler
-
 func ForgotPasswordHandler(ctx *gin.Context) {
 	var forgotRequest request.ForgotPassRequest
 	utils.RequestDecoding(ctx, &forgotRequest)

@@ -13,7 +13,6 @@ import (
 )
 
 func ShowPowerUpsHandler(ctx *gin.Context) {
-
 	powerups.ShowPowerUpsService(ctx)
 }
 
@@ -46,6 +45,12 @@ func BuyPowerupHandler(ctx *gin.Context) {
 	var BuyRequest request.BuyRequest
 	utils.RequestDecoding(ctx, &BuyRequest)
 	//add validation
+
+	err := validation.CheckValidation(&BuyRequest)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 
 	powerups.BuyPowerupService(ctx, playerID.(string), BuyRequest)
 }

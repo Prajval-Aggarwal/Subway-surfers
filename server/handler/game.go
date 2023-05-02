@@ -19,7 +19,7 @@ func EndGameHandler(ctx *gin.Context) {
 		return
 	}
 	var endGameRequest request.EndGameRequest
-	utils.RequestDecoding(ctx, endGameRequest)
+	utils.RequestDecoding(ctx, &endGameRequest)
 
 	err := validation.CheckValidation(&endGameRequest)
 	if err != nil {

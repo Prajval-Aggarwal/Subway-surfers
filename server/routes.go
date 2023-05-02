@@ -11,6 +11,9 @@ import (
 
 func ConfigureRoutes(server *Server) {
 
+	//starting cron
+	//handler.StartCron()
+
 	//authentication route
 	server.engine.POST("/register-player", handler.RegisterHandler)
 	server.engine.POST("/login", handler.LoginHandler)
@@ -23,12 +26,15 @@ func ConfigureRoutes(server *Server) {
 	//player detail route
 	server.engine.GET("/show-player", handler.ShowPlayerDetailsHandler)
 
-	server.engine.GET("/trial", provider.PlayerAuthentication, handler.WelcomeHandler)
+	//server.engine.GET("/trial", handler.SelectRand)
 
 	//powerup routes
 	server.engine.GET("/show-powerups", handler.ShowPowerUpsHandler)
 	server.engine.POST("/use-powerup", provider.PlayerAuthentication, handler.UsePowerUpHandler)
-	server.engine.POST("/buy-powerup", handler.BuyPowerupHandler)
+	server.engine.POST("/buy-powerup", provider.PlayerAuthentication, handler.BuyPowerupHandler)
+
+	//reward handler
+	server.engine.GET("/collect-reward", handler.RewardCollectedHandler)
 
 	//leaderboard route
 	server.engine.GET("/show-leaderboard", handler.ShowLeaderBoardHandler)

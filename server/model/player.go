@@ -13,6 +13,7 @@ type Player struct {
 	Password      string         `json:"password" `
 	HighScore     int64          `json:"highScore"`
 	TotalDistance int64          `json:"totalDistance"`
+	Streak        int64          `json:"streak"`
 	CreatedAt     time.Time      `json:"createdAt"`
 	UpdatedAt     time.Time      `json:"updatedAt"`
 	DeletedAt     gorm.DeletedAt `json:"deletedAt" gorm:"index"`
