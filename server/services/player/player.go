@@ -37,6 +37,6 @@ func ShowPlayerDetailsService(ctx *gin.Context, playerId string) {
 	playerDetails = db.Fun(query1, playerId)
 	playerDetails.PowerUps = powerups
 
-	response.ShowResponse("Success", 200, "sdvjhsdf", playerDetails, ctx)
+	response.ShowResponse("Success", 200, "Player Details fetched sucessfully", playerDetails, ctx)
 
 }

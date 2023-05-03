@@ -81,3 +81,11 @@ func Fun(query string, args ...interface{}) response.PlayerDetails {
 	return *playerDetails
 
 }
+func Fun1(query string, args ...interface{}) response.CartResponse {
+	cartDetails := &response.CartResponse{}
+	row := db.Raw(query, args...).Row()
+
+	row.Scan(&cartDetails.CartId)
+	return *cartDetails
+
+}

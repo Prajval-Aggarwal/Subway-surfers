@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type reward struct {
+type Reward struct {
 	PowerUpID string
 }
 
@@ -48,7 +48,7 @@ func GenerateReward() error {
 		var dailyReward model.DailyReward
 		dailyReward.P_Id = p.P_ID
 		now := time.Now().Truncate(time.Hour)
-		dailyReward.Date = now.Format("02 Jan 2006")
+		dailyReward.CreatedAt = now
 		dailyReward.Status = "Not Collected"
 		dailyReward.Quantity = int64(rand.Intn(10-1) + 1)
 		reward := SelectRand()
@@ -62,9 +62,9 @@ func GenerateReward() error {
 
 }
 
-func SelectRand() *reward {
+func SelectRand() *Reward {
 
-	rewrd := &reward{}
+	rewrd := &Reward{}
 	query := "SELECT power_up_id FROM power_ups ORDER BY RANDOM()  LIMIT 1;"
 	err := db.RawQuery(query, rewrd)
 	if err != nil {

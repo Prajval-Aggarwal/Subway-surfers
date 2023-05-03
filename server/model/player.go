@@ -29,3 +29,8 @@ type PlayerPowerUps struct {
 	PowerUp_Id string `json:"powerUpId"`
 	Quantity   int64  `json:"quantity"`
 }
+
+type PlayerPayment struct {
+	P_ID      string `json:"playerId"`
+	PaymentId string `json:"paymentId"`
+}

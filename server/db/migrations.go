@@ -25,5 +25,15 @@ func AutoMigrateDatabase(db *gorm.DB) {
 		})
 		dbVersion.Version = 1
 	}
+	if dbVersion.Version < 2 {
+		err := db.AutoMigrate(&model.Cart{}, &model.Payment{}, &model.CartItem{}, &model.PlayerPayment{})
+		if err != nil {
+			panic(err)
+		}
+		db.Where("version=?", dbVersion.Version).Updates(&model.DbVersion{
+			Version: 2,
+		})
+		dbVersion.Version = 2
+	}
 
 }
