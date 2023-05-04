@@ -121,7 +121,11 @@ func LogoutService(ctx *gin.Context, playerId string) {
 
 func UpdatePasswordService(ctx *gin.Context, password request.UpdatePasswordRequest, playerID string) {
 	var playerDetails model.Player
-	db.FindById(&playerDetails, playerID, "p_id")
+	err := db.FindById(&playerDetails, playerID, "p_id")
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 	if playerDetails.Password == password.Password {
 		response.ErrorResponse(ctx, 400, "Password should be differnt from previous password")
 		return
@@ -135,7 +139,7 @@ func UpdatePasswordService(ctx *gin.Context, password request.UpdatePasswordRequ
 	// playerDetails.Password = string(bs)
 	playerDetails.Password = password.Password
 
-	err := db.UpdateRecord(&playerDetails, playerID, "p_id").Error
+	err = db.UpdateRecord(&playerDetails, playerID, "p_id").Error
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
 		return
@@ -146,10 +150,14 @@ func UpdatePasswordService(ctx *gin.Context, password request.UpdatePasswordRequ
 
 func UpdateNameService(ctx *gin.Context, playerName request.UpdateNameRequest, playerID string) {
 	var playerDetails model.Player
-	db.FindById(&playerDetails, playerID, "p_id")
+	err := db.FindById(&playerDetails, playerID, "p_id")
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 	playerDetails.P_Name = playerName.P_Name
 
-	err := db.UpdateRecord(&playerDetails, playerID, "p_id").Error
+	err = db.UpdateRecord(&playerDetails, playerID, "p_id").Error
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
 		return

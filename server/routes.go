@@ -46,7 +46,6 @@ func ConfigureRoutes(server *Server) {
 	server.engine.POST("/make-payment", handler.MakePaymentHandler)
 
 	//cart routes
-
 	server.engine.GET("/show-cart", handler.ShowCartHandler)
 
 	//swaggger route

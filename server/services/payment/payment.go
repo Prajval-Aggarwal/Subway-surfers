@@ -77,7 +77,7 @@ func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest reques
 	paymentDetails.CartId = paymentRequest.CartId
 	paymentDetails.PaymentType = paymentRequest.PaymentType
 
-	totalAmount := float64(0)
+	totalAmount := 0.0
 	//calculate amount from the items present in the cart
 	for _, x := range cartItems {
 		if x.ItemId == "1" {
@@ -105,6 +105,7 @@ func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest reques
 	pi, pi1 := StripePayment(totalAmount, ctx)
 	paymentDetails.PaymentId = pi.ID
 	paymentDetails.Status = string(pi1.Status)
+
 	//create payment record
 	err := db.CreateRecord(&paymentDetails)
 	if err != nil {
@@ -117,5 +118,4 @@ func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest reques
 		PaymentId: pi.ID,
 	}
 	db.CreateRecord(&playerPayment)
-	response.ShowResponse("Success", 200, string(pi.Status), paymentDetails, ctx)
 }

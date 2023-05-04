@@ -1,7 +1,6 @@
 package powerups
 
 import (
-	"fmt"
 	"subway/server/db"
 	"subway/server/model"
 	"subway/server/request"
@@ -66,7 +65,11 @@ func BuyPowerupService(ctx *gin.Context, playerId string, BuyRequest request.Buy
 	amount := powerUp.Price * BuyRequest.Quantity
 
 	//decrease the coins o the player and update the record
-	db.FindById(&playerCoins, playerId, "p_id")
+	err = db.FindById(&playerCoins, playerId, "p_id")
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 
 	if playerCoins.Coins-amount < 0 {
 		response.ErrorResponse(ctx, 400, "Not enough coin to buy powerup")
@@ -83,9 +86,13 @@ func BuyPowerupService(ctx *gin.Context, playerId string, BuyRequest request.Buy
 	//add the power ups to player_powerups table add or update
 
 	query := "SELECT EXISTS(SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?)"
-	db.RawQuery(query, &exists, playerId, BuyRequest.PowerUp_Id)
+	err = db.RawQuery(query, &exists, playerId, BuyRequest.PowerUp_Id)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 	if !exists {
-		fmt.Println("if worked")
+
 		playerPowerups.PowerUp_Id = BuyRequest.PowerUp_Id
 		playerPowerups.Quantity = BuyRequest.Quantity
 		db.CreateRecord(&playerPowerups)
@@ -94,10 +101,8 @@ func BuyPowerupService(ctx *gin.Context, playerId string, BuyRequest request.Buy
 		query = "SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?;"
 		db.RawQuery(query, &playerPowerups, playerId, BuyRequest.PowerUp_Id)
 
-		fmt.Println("else worked")
-		fmt.Println("before player power up quantity is", playerPowerups.Quantity)
 		playerPowerups.Quantity = playerPowerups.Quantity + BuyRequest.Quantity
-		fmt.Println("player power up quantity is", playerPowerups.Quantity)
+
 		query = "UPDATE player_power_ups SET quantity=? WHERE p_id=? AND power_up_id=?;"
 
 		err = db.ExecuteQuery(query, playerPowerups.Quantity, playerId, BuyRequest.PowerUp_Id)

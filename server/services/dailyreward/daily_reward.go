@@ -86,7 +86,7 @@ func RewardCollectedService(ctx *gin.Context, playerId string) {
 		return
 	}
 
-	//updadate streak
+	//update streak
 	err = db.FindById(&playerDetails, playerId, "p_id")
 	if err != nil {
 		response.ErrorResponse(ctx, 400, "Reward not generated")
@@ -100,7 +100,7 @@ func RewardCollectedService(ctx *gin.Context, playerId string) {
 		return
 	}
 
-	//change reward status from not collected to collecte
+	//change reward status from not collected to collected
 	playerReward.Status = "Collected"
 	db.UpdateRecord(&playerReward, playerId, "p_id")
 
