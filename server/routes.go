@@ -38,6 +38,7 @@ func ConfigureRoutes(server *Server) {
 
 	//reward handler
 	server.engine.GET("/collect-reward", handler.RewardCollectedHandler)
+	server.engine.GET("/show-reward", handler.ShowPlayerRewardHandler)
 
 	//leaderboard route
 	server.engine.GET("/show-leaderboard", handler.ShowLeaderBoardHandler)

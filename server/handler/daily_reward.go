@@ -8,13 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//	@Description	Collet reward handler
-//	@Accept			json
-//	@Produce		json
-//	@Success		200	{object}	response.Success
-//	@Failure		400	{object}	response.Error
-//	@Tags			Daily Reward
-//	@Router			/collect-reward [get]
+// @Description	Collet reward handler
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	response.Success
+// @Failure		400	{object}	response.Error
+// @Tags			Daily Reward
+// @Router			/collect-reward [get]
 func RewardCollectedHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)
@@ -23,4 +23,15 @@ func RewardCollectedHandler(ctx *gin.Context) {
 		return
 	}
 	dailyreward.RewardCollectedService(ctx, playerID.(string))
+}
+
+func ShowPlayerRewardHandler(ctx *gin.Context) {
+	playerID, exists := ctx.Get("playerId")
+	fmt.Println("player id is :", playerID)
+	if !exists {
+		response.ErrorResponse(ctx, 401, "Unauthorised")
+		return
+	}
+	dailyreward.ShowPlayerRewardService(ctx, playerID.(string))
+
 }

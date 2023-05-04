@@ -15,6 +15,18 @@ type Reward struct {
 	PowerUpID string
 }
 
+func ShowPlayerRewardService(ctx *gin.Context, playerId string) {
+	var playerReward model.DailyReward
+	query := "SELECT * FROM daily_rewards WHERE p_id=? AND status='Not Collected'"
+	err := db.RawQuery(query, &playerReward, playerId)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
+
+	response.ShowResponse("Success", 200, "Successfully fetched reward", &playerReward, ctx)
+}
+
 func UpdateStreak() error {
 	var playersReward []model.DailyReward
 	query := "SELECT * FROM daily_rewards WHERE status='Not Collected'"
@@ -85,7 +97,10 @@ func RewardCollectedService(ctx *gin.Context, playerId string) {
 		response.ErrorResponse(ctx, 400, "Reward not generated")
 		return
 	}
-
+	if playerReward.Status == "Collected" {
+		response.ErrorResponse(ctx, 400, "Player has already collected the reward")
+		return
+	}
 	//update streak
 	err = db.FindById(&playerDetails, playerId, "p_id")
 	if err != nil {
