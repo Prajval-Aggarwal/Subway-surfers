@@ -23,5 +23,6 @@ lint-run:
 	golangci-lint run
 
 run:
+	clear
 	go mod tidy
 	go run main.go

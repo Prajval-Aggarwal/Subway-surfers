@@ -228,6 +228,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/make-payment": {
+            "post": {
+                "description": "Make payment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "parameters": [
+                    {
+                        "description": "payment details of the player",
+                        "name": "paymentDetails",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/register-player": {
             "post": {
                 "description": "Register a player",
@@ -289,6 +328,34 @@ const docTemplate = `{
                             "$ref": "#/definitions/request.UpdatePasswordRequest"
                         }
                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-cart": {
+            "get": {
+                "description": "Show cart to the player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
                 ],
                 "responses": {
                     "200": {
@@ -561,6 +628,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.PaymentRequest": {
+            "type": "object",
+            "properties": {
+                "cartId": {
+                    "type": "string"
+                },
+                "paymentType": {
                     "type": "string"
                 }
             }

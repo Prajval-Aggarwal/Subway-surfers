@@ -7,6 +7,7 @@ type PlayerDetails struct {
 	HighScore     int64
 	TotalDistance int64
 	Coins         int64
+	CurrAvatar    string
 	PowerUps      []PowerUp
 }
 

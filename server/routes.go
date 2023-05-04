@@ -14,6 +14,9 @@ func ConfigureRoutes(server *Server) {
 	//starting cron
 	//handler.StartCron()
 
+	//TODO
+	//Apply middleware to required routes.. not added for testing thing
+
 	//authentication route
 	server.engine.POST("/register-player", handler.RegisterHandler)
 	server.engine.POST("/login", handler.LoginHandler)
@@ -47,6 +50,10 @@ func ConfigureRoutes(server *Server) {
 
 	//cart routes
 	server.engine.GET("/show-cart", handler.ShowCartHandler)
+
+	//avatar route
+	server.engine.GET("/show-avatars", handler.ShowAvatarHandler)
+	server.engine.PATCH("/update-avatar", handler.UpdateAvatarHandler)
 
 	//swaggger route
 	server.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

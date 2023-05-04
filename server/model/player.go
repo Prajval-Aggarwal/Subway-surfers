@@ -14,6 +14,7 @@ type Player struct {
 	HighScore     int64          `json:"highScore"`
 	TotalDistance int64          `json:"totalDistance"`
 	Streak        int64          `json:"streak"`
+	CurrAvatar    string         `json:"currentAvatar"`
 	CreatedAt     time.Time      `json:"createdAt"`
 	UpdatedAt     time.Time      `json:"updatedAt"`
 	DeletedAt     gorm.DeletedAt `json:"deletedAt" gorm:"index"`
@@ -33,4 +34,9 @@ type PlayerPowerUps struct {
 type PlayerPayment struct {
 	P_ID      string `json:"playerId"`
 	PaymentId string `json:"paymentId"`
+}
+
+type PlayerAvatar struct {
+	P_Id     string `json:"playerId"`
+	AvatarId string `json:"avatarId"`
 }

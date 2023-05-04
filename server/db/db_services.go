@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"subway/server/response"
 
 	"gorm.io/gorm"
@@ -38,7 +39,7 @@ func UpdateRecord(data interface{}, id interface{}, columName string) *gorm.DB {
 }
 
 func RawQuery(query string, data interface{}, args ...interface{}) error {
-
+	fmt.Println("query is ", query)
 	err := db.Raw(query, args...).Scan(data).Error
 	if err != nil {
 		return err
@@ -77,7 +78,7 @@ func Fun(query string, args ...interface{}) response.PlayerDetails {
 	playerDetails := &response.PlayerDetails{}
 	row := db.Raw(query, args...).Row()
 
-	row.Scan(&playerDetails.P_ID, &playerDetails.P_Name, &playerDetails.Email, &playerDetails.HighScore, &playerDetails.TotalDistance, &playerDetails.Coins)
+	row.Scan(&playerDetails.P_ID, &playerDetails.P_Name, &playerDetails.Email, &playerDetails.HighScore, &playerDetails.TotalDistance, &playerDetails.Coins, &playerDetails.CurrAvatar)
 	return *playerDetails
 
 }
@@ -89,3 +90,14 @@ func Fun1(query string, args ...interface{}) response.CartResponse {
 	return *cartDetails
 
 }
+
+// func Fun2(query string, args ...interface{}) response.AvatarResponse {
+// 	avatarDetails := &response.AvatarResponse{}
+// 	fmt.Println("query is", query)
+// 	row := db.Raw(query, args...).Row()
+// 	fmt.Println("row is", *row.)
+// 	row.Scan(&avatarDetails.AvatarId)
+// 	fmt.Println("avatar details is", avatarDetails)
+// 	return *avatarDetails
+
+// }

@@ -1,11 +1,13 @@
 package game
 
 import (
+	"fmt"
 	"math"
 	"subway/server/db"
 	"subway/server/model"
 	"subway/server/request"
 	"subway/server/response"
+	"subway/server/services/avatar"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,6 +27,11 @@ func EndGameService(ctx *gin.Context, playerId string, endGameRequest request.En
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
 		return
+	}
+
+	if endGameRequest.Distance > 100000 {
+		fmt.Println("unlock avatar function called")
+		avatar.UnlockAvtar(ctx, playerId, endGameRequest.Distance)
 	}
 
 	//upadate player coins

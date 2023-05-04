@@ -15,7 +15,7 @@ import (
 // @Success		200				{object}	response.Success
 // @Failure		400				{object}	response.Error
 // @Param			paymentDetails	body		request.PaymentRequest	true	"payment details of the player"
-// @Tags			Authentication
+// @Tags			Payment
 // @Router			/make-payment [post]
 func MakePaymentHandler(ctx *gin.Context) {
 	// playerID, exists := ctx.Get("playerId")

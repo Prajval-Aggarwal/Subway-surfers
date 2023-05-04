@@ -1,7 +1,7 @@
 package model
 
 type Payment struct {
-	PaymentId   string
+	PaymentId   string `json:"primaryKey"`
 	CartId      string
 	PaymentType string
 	Amount      float64
