@@ -44,7 +44,7 @@ func ConfigureRoutes(server *Server) {
 	server.engine.GET("/show-leaderboard", handler.ShowLeaderBoardHandler)
 
 	//end game route
-	server.engine.POST("/end-game", provider.PlayerAuthentication, handler.EndGameHandler)
+	server.engine.POST("/end-game", handler.EndGameHandler)
 
 	//payment route
 	server.engine.POST("/make-payment", handler.MakePaymentHandler)

@@ -32,6 +32,14 @@ func RegisterService(ctx *gin.Context, registerRequest request.RegisterRequest) 
 	// }
 	// player.Password=string(bs)
 
+	//select random avatar for the user
+	var avatar struct {
+		AvatarId string
+	}
+	query := "SELECT avatar_id FROM avatars WHERE status='Unlocked' ORDER BY RANDOM() LIMIT 1"
+	db.RawQuery(query, avatar)
+	player.CurrAvatar = avatar.AvatarId
+
 	player.Password = password
 	err := db.CreateRecord(&player)
 	if err != nil {

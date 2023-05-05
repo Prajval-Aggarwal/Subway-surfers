@@ -34,8 +34,9 @@ func ShowAvatarService(ctx *gin.Context) {
 
 func UnlockAvtar(ctx *gin.Context, playerId string, playerPoints int64) {
 	var avatars []model.Avatar
-	query := "SELECT * FROM avatars WHERE points_required<?"
-	err := db.RawQuery(query, avatars, playerPoints)
+	fmt.Println("playerasda", playerPoints)
+	query := "SELECT * FROM avatars WHERE points_required < ?"
+	err := db.RawQuery(query, &avatars, playerPoints)
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
 		return
@@ -45,10 +46,15 @@ func UnlockAvtar(ctx *gin.Context, playerId string, playerPoints int64) {
 		var playerAvatar model.PlayerAvatar
 		playerAvatar.P_Id = playerId
 		playerAvatar.AvatarId = avatar.AvatarId
-		err = db.CreateRecord(playerAvatar)
-		if err != nil {
-			response.ErrorResponse(ctx, 400, err.Error())
-			return
+
+		//use update record instead of create record
+
+		if !db.RecordExist("player_avatars", "avatar_id", avatar.AvatarId) {
+			err = db.CreateRecord(playerAvatar)
+			if err != nil {
+				response.ErrorResponse(ctx, 400, err.Error())
+				return
+			}
 		}
 		err = db.UpdateRecord(&avatar, avatar.AvatarId, "avatar_id").Error
 		if err != nil {
