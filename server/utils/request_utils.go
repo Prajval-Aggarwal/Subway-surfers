@@ -5,23 +5,21 @@ import (
 	"errors"
 	"io/ioutil"
 	"strings"
-	"subway/server/response"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RequestDecoding(context *gin.Context, data interface{}) {
+func RequestDecoding(context *gin.Context, data interface{}) error {
 
 	reqBody, err := ioutil.ReadAll(context.Request.Body)
 	if err != nil {
-		response.ErrorResponse(context, 400, err.Error())
-		return
+		return err
 	}
 	err = json.Unmarshal(reqBody, &data)
 	if err != nil {
-		response.ErrorResponse(context, 400, err.Error())
-		return
+		return err
 	}
+	return nil
 }
 
 func SetHeader(context *gin.Context) {

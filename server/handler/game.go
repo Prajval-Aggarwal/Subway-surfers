@@ -5,7 +5,6 @@ import (
 	"subway/server/response"
 	"subway/server/services/game"
 	"subway/server/utils"
-	"subway/server/validation"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,9 +25,12 @@ func EndGameHandler(ctx *gin.Context) {
 	// 	return
 	// }
 	var endGameRequest request.EndGameRequest
-	utils.RequestDecoding(ctx, &endGameRequest)
-
-	err := validation.CheckValidation(&endGameRequest)
+	err := utils.RequestDecoding(ctx, &endGameRequest)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
+	err = endGameRequest.Validate()
 	if err != nil {
 		response.ErrorResponse(ctx, 400, err.Error())
 		return

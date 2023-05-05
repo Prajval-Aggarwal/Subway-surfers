@@ -1,28 +1,64 @@
 package request
 
+import (
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
+)
+
 type RegisterRequest struct {
-	P_Name   string `json:"playerName" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,max=16,min=8"`
+	P_Name   string `json:"playerName" `
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
-}
-
-type LogoutRequest struct {
-	P_Id string `json:"playerId" validate:"required"`
+	Email    string `json:"email" `
+	Password string `json:"password" `
 }
 
 type UpdatePasswordRequest struct {
-	Password string `json:"password" validate:"required"`
+	Password string `json:"password" `
 }
 
 type UpdateNameRequest struct {
-	P_Name string `json:"playerName" validate:"required"`
+	P_Name string `json:"playerName" `
 }
 
 type ForgotPassRequest struct {
-	Email string `json:"email" validate:"required,email"`
+	Email string `json:"email" `
+}
+
+//validations added
+
+func (a RegisterRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.P_Name, validation.Required, validation.Length(5, 15)),
+		validation.Field(&a.Email, validation.Required, is.Email),
+		validation.Field(&a.Password, validation.Required),
+	)
+}
+
+func (a LoginRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Email, validation.Required, is.Email),
+		validation.Field(&a.Password, validation.Required),
+	)
+}
+
+func (a UpdatePasswordRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Password, validation.Required),
+	)
+}
+
+func (a UpdateNameRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.P_Name, validation.Required, validation.Length(5, 15)),
+	)
+}
+
+func (a ForgotPassRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Email, validation.Required, is.Email),
+	)
 }

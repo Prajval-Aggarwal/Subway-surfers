@@ -2,6 +2,7 @@ package handler
 
 import (
 	"subway/server/request"
+	"subway/server/response"
 	"subway/server/utils"
 
 	"subway/server/services/payment"
@@ -25,7 +26,16 @@ func MakePaymentHandler(ctx *gin.Context) {
 	// 	return
 	// }
 	var paymentRequest request.PaymentRequest
-	utils.RequestDecoding(ctx, &paymentRequest)
+	err := utils.RequestDecoding(ctx, &paymentRequest)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
+	err = paymentRequest.Validate()
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 	payment.MakePaymentService(ctx, "123", paymentRequest)
 
 }

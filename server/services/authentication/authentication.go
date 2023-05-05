@@ -8,6 +8,7 @@ import (
 	"subway/server/provider"
 	"subway/server/request"
 	"subway/server/response"
+	"subway/server/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,11 @@ func RegisterService(ctx *gin.Context, registerRequest request.RegisterRequest) 
 
 	password := registerRequest.Password
 
+	err := utils.IsPassValid(password)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
+		return
+	}
 	//using bcrypt
 	// bs, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	// if err != nil {
@@ -41,7 +47,7 @@ func RegisterService(ctx *gin.Context, registerRequest request.RegisterRequest) 
 	player.CurrAvatar = avatar.AvatarId
 
 	player.Password = password
-	err := db.CreateRecord(&player)
+	err = db.CreateRecord(&player)
 	if err != nil {
 		response.ErrorResponse(ctx, 500, err.Error())
 		return
@@ -136,6 +142,11 @@ func UpdatePasswordService(ctx *gin.Context, password request.UpdatePasswordRequ
 	}
 	if playerDetails.Password == password.Password {
 		response.ErrorResponse(ctx, 400, "Password should be differnt from previous password")
+		return
+	}
+	err = utils.IsPassValid(password.Password)
+	if err != nil {
+		response.ErrorResponse(ctx, 400, err.Error())
 		return
 	}
 	//using bcrypt

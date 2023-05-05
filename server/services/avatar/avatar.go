@@ -66,7 +66,7 @@ func UnlockAvtar(ctx *gin.Context, playerId string, playerPoints int64) {
 
 }
 
-func UpdateAvatarService(ctx *gin.Context, playerId string, avatarRequest request.AvatarRequest) {
+func UpdateAvatarService(ctx *gin.Context, playerId string, avatarRequest request.UpdateAvatarRequest) {
 	//chnage the current avatar of the user and chack whtether taht avar tar is present in playerAvatar list or not
 	var exists bool
 	query := "SELECT EXISTS (SELECT * FROM player_avatars WHERE p_id=? AND avatar_id=?)"
