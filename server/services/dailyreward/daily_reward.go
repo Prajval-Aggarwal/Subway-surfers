@@ -6,6 +6,7 @@ import (
 	"subway/server/db"
 	"subway/server/model"
 	"subway/server/response"
+	"subway/server/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -15,18 +16,20 @@ type Reward struct {
 	PowerUpID string
 }
 
+// ShowPlayerRewardService shows th erward of the player that is generated on that day and is not collected yet.
 func ShowPlayerRewardService(ctx *gin.Context, playerId string) {
 	var playerReward model.DailyReward
 	query := "SELECT * FROM daily_rewards WHERE p_id=? AND status='Not Collected'"
 	err := db.RawQuery(query, &playerReward, playerId)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
-	response.ShowResponse("Success", 200, "Successfully fetched reward", &playerReward, ctx)
+	response.ShowResponse("Success", utils.SUCCESS, "Successfully fetched reward", &playerReward, ctx)
 }
 
+// UpdateStreak set the streak of the player to user if player misses to collect the reward
 func UpdateStreak() error {
 	var playersReward []model.DailyReward
 	query := "SELECT * FROM daily_rewards WHERE status='Not Collected'"
@@ -48,6 +51,7 @@ func UpdateStreak() error {
 
 }
 
+// GenerateReward generates random reward for all the player
 func GenerateReward() error {
 	query := "TRUNCATE TABLE daily_rewards"
 	db.ExecuteQuery(query)
@@ -87,38 +91,46 @@ func SelectRand() *Reward {
 	return rewrd
 }
 
+// RewardCollectedService collects the reward generated for the player
 func RewardCollectedService(ctx *gin.Context, playerId string) {
 	var playerReward model.DailyReward
 	var playerPowerDetail model.PlayerPowerUps
 	var playerDetails model.Player
 	var exists bool
+
+	//Check if the reward is genrated or not
 	err := db.FindById(&playerReward, playerId, "p_id")
 	if err != nil {
-		response.ErrorResponse(ctx, 400, "Reward not generated")
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Reward not generated")
 		return
 	}
+
+	//Check if the player has already collected the reward or not
 	if playerReward.Status == "Collected" {
-		response.ErrorResponse(ctx, 400, "Player has already collected the reward")
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Player has already collected the reward")
 		return
 	}
-	//update streak
+
+	//After collecting the reward updating the player streak
 	err = db.FindById(&playerDetails, playerId, "p_id")
 	if err != nil {
-		response.ErrorResponse(ctx, 400, "Reward not generated")
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Reward not generated")
 		return
 	}
 	playerDetails.Streak = playerDetails.Streak + 1
 
 	err = db.UpdateRecord(&playerDetails, playerId, "p_id").Error
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
-	//change reward status from not collected to collected
+	// Changing the reward status from not collected to collected
 	playerReward.Status = "Collected"
 	db.UpdateRecord(&playerReward, playerId, "p_id")
 
+	// Adding the reward to players account
+	//checking if the player has taken that power up in past or not
 	query := "SELECT EXISTS(SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?)"
 	db.RawQuery(query, &exists, playerId, playerReward.P_Id)
 	if !exists {
@@ -126,24 +138,27 @@ func RewardCollectedService(ctx *gin.Context, playerId string) {
 		playerPowerDetail.P_ID = playerId
 		playerPowerDetail.PowerUp_Id = playerReward.PowerUpId
 		playerPowerDetail.Quantity = playerReward.Quantity
-		db.CreateRecord(&playerPowerDetail)
+		err := db.CreateRecord(&playerPowerDetail)
+		if err != nil {
+			response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
+			return
+		}
 	} else {
 
+		// If the player already has that power up the increasing its value according to the reward
 		query = "SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?;"
 		db.RawQuery(query, &playerPowerDetail, playerId, playerReward.PowerUpId)
 
-		fmt.Println("else worked")
-		fmt.Println("before player power up quantity is", playerPowerDetail.Quantity)
 		playerPowerDetail.Quantity = playerPowerDetail.Quantity + playerReward.Quantity
-		fmt.Println("player power up quantity is", playerPowerDetail.Quantity)
 
 		query = "UPDATE player_power_ups SET quantity=? WHERE p_id=? AND power_up_id=?;"
 
 		err = db.ExecuteQuery(query, playerPowerDetail.Quantity, playerId, playerReward.PowerUpId)
 		if err != nil {
-			response.ErrorResponse(ctx, 400, err.Error())
+			response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 			return
 		}
 
 	}
+	response.ShowResponse("Success", utils.SUCCESS, "Reward collected successfully", nil, ctx)
 }

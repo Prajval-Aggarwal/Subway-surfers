@@ -5,30 +5,35 @@ import (
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
+// Struct for registration of the user
 type RegisterRequest struct {
 	P_Name   string `json:"playerName" `
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
+// Struct for login request of the user
 type LoginRequest struct {
 	Email    string `json:"email" `
 	Password string `json:"password" `
 }
 
+// Struct for update password request
 type UpdatePasswordRequest struct {
 	Password string `json:"password" `
 }
 
+// Struct for update name request
 type UpdateNameRequest struct {
 	P_Name string `json:"playerName" `
 }
 
+// Struct for forgot password request
 type ForgotPassRequest struct {
 	Email string `json:"email" `
 }
 
-//validations added
+//Validations on structs
 
 func (a RegisterRequest) Validate() error {
 	return validation.ValidateStruct(&a,

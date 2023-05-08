@@ -51,6 +51,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -76,6 +82,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -115,6 +127,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -224,6 +242,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -260,6 +284,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -328,6 +358,34 @@ const docTemplate = `{
                             "$ref": "#/definitions/request.UpdatePasswordRequest"
                         }
                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-avatars": {
+            "get": {
+                "description": "Show the list of avatars",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Avatar"
                 ],
                 "responses": {
                     "200": {
@@ -425,6 +483,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -450,6 +514,85 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-reward": {
+            "get": {
+                "description": "Shows the reward or the day of the player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Daily Reward"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-avatar": {
+            "patch": {
+                "description": "Updates the avatar for the player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Avatar"
+                ],
+                "parameters": [
+                    {
+                        "description": "Id of the new avatar",
+                        "name": "newAvatarName",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateAvatarRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -492,6 +635,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -528,6 +677,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -570,6 +725,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -578,10 +739,6 @@ const docTemplate = `{
     "definitions": {
         "request.BuyRequest": {
             "type": "object",
-            "required": [
-                "powerUpId",
-                "quantity"
-            ],
             "properties": {
                 "powerUpId": {
                     "type": "string"
@@ -593,10 +750,6 @@ const docTemplate = `{
         },
         "request.EndGameRequest": {
             "type": "object",
-            "required": [
-                "coinsCollected",
-                "distance"
-            ],
             "properties": {
                 "coinsCollected": {
                     "type": "integer"
@@ -608,9 +761,6 @@ const docTemplate = `{
         },
         "request.ForgotPassRequest": {
             "type": "object",
-            "required": [
-                "email"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -619,10 +769,6 @@ const docTemplate = `{
         },
         "request.LoginRequest": {
             "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -645,9 +791,6 @@ const docTemplate = `{
         },
         "request.PowerUpRequest": {
             "type": "object",
-            "required": [
-                "powerUpId"
-            ],
             "properties": {
                 "powerUpId": {
                     "type": "string"
@@ -656,30 +799,28 @@ const docTemplate = `{
         },
         "request.RegisterRequest": {
             "type": "object",
-            "required": [
-                "email",
-                "password",
-                "playerName"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
                 "password": {
-                    "type": "string",
-                    "maxLength": 16,
-                    "minLength": 8
+                    "type": "string"
                 },
                 "playerName": {
                     "type": "string"
                 }
             }
         },
+        "request.UpdateAvatarRequest": {
+            "type": "object",
+            "properties": {
+                "avatarId": {
+                    "type": "string"
+                }
+            }
+        },
         "request.UpdateNameRequest": {
             "type": "object",
-            "required": [
-                "playerName"
-            ],
             "properties": {
                 "playerName": {
                     "type": "string"
@@ -688,9 +829,6 @@ const docTemplate = `{
         },
         "request.UpdatePasswordRequest": {
             "type": "object",
-            "required": [
-                "password"
-            ],
             "properties": {
                 "password": {
                     "type": "string"

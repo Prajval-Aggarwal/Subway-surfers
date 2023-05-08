@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RequestDecoding decoed the request body and stores it in data interface
 func RequestDecoding(context *gin.Context, data interface{}) error {
 
 	reqBody, err := ioutil.ReadAll(context.Request.Body)
@@ -22,11 +23,13 @@ func RequestDecoding(context *gin.Context, data interface{}) error {
 	return nil
 }
 
+// SetHeader sets the header to value of application/json
 func SetHeader(context *gin.Context) {
 	context.Writer.Header().Set("Content-Type", "application/json")
 
 }
 
+// GetTokenFromAuthHeader returns the token from auth header
 func GetTokenFromAuthHeader(context *gin.Context) (string, error) {
 	token := strings.Split(context.Request.Header["Authorization"][0], " ")[1]
 	if token == "" {

@@ -4,6 +4,7 @@ import (
 	"errors"
 )
 
+// IsPassValid validates the password
 func IsPassValid(password string) error {
 
 	if len(password) < 8 {

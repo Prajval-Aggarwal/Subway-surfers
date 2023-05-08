@@ -90,14 +90,3 @@ func Fun1(query string, args ...interface{}) response.CartResponse {
 	return *cartDetails
 
 }
-
-// func Fun2(query string, args ...interface{}) response.AvatarResponse {
-// 	avatarDetails := &response.AvatarResponse{}
-// 	fmt.Println("query is", query)
-// 	row := db.Raw(query, args...).Row()
-// 	fmt.Println("row is", *row.)
-// 	row.Scan(&avatarDetails.AvatarId)
-// 	fmt.Println("avatar details is", avatarDetails)
-// 	return *avatarDetails
-
-// }

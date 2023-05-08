@@ -20,6 +20,7 @@ func Response(context *gin.Context, statusCode int, data interface{}) {
 	context.JSON(statusCode, data)
 }
 
+// Show the response
 func ShowResponse(status string, statusCode int64, message string, data interface{}, context *gin.Context) {
 	context.Writer.Header().Set("Content-Type", "application/json")
 	context.Writer.WriteHeader(int(statusCode))
@@ -33,6 +34,7 @@ func ShowResponse(status string, statusCode int64, message string, data interfac
 	Response(context, int(statusCode), response)
 }
 
+// Shows error response
 func ErrorResponse(context *gin.Context, statusCode int, message string) {
 	Response(context, statusCode, Error{Code: statusCode, Message: message})
 }

@@ -1,9 +1,10 @@
-package provider
+package gateway
 
 import (
 	"subway/server/db"
 	"subway/server/model"
 	"subway/server/response"
+	"subway/server/services/token"
 	"subway/server/utils"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,7 @@ func PlayerAuthentication(ctx *gin.Context) {
 		return
 	}
 
-	claims, err := DecodeToken(tokenString)
+	claims, err := token.DecodeToken(tokenString)
 	if err != nil {
 		response.ErrorResponse(ctx, 401, err.Error())
 		ctx.Abort()

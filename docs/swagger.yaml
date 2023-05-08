@@ -5,9 +5,6 @@ definitions:
         type: string
       quantity:
         type: integer
-    required:
-    - powerUpId
-    - quantity
     type: object
   request.EndGameRequest:
     properties:
@@ -15,16 +12,11 @@ definitions:
         type: integer
       distance:
         type: integer
-    required:
-    - coinsCollected
-    - distance
     type: object
   request.ForgotPassRequest:
     properties:
       email:
         type: string
-    required:
-    - email
     type: object
   request.LoginRequest:
     properties:
@@ -32,9 +24,6 @@ definitions:
         type: string
       password:
         type: string
-    required:
-    - email
-    - password
     type: object
   request.PaymentRequest:
     properties:
@@ -47,37 +36,30 @@ definitions:
     properties:
       powerUpId:
         type: string
-    required:
-    - powerUpId
     type: object
   request.RegisterRequest:
     properties:
       email:
         type: string
       password:
-        maxLength: 16
-        minLength: 8
         type: string
       playerName:
         type: string
-    required:
-    - email
-    - password
-    - playerName
+    type: object
+  request.UpdateAvatarRequest:
+    properties:
+      avatarId:
+        type: string
     type: object
   request.UpdateNameRequest:
     properties:
       playerName:
         type: string
-    required:
-    - playerName
     type: object
   request.UpdatePasswordRequest:
     properties:
       password:
         type: string
-    required:
-    - password
     type: object
   response.Error:
     properties:
@@ -126,6 +108,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Error'
       tags:
       - Powerups
   /collect-reward:
@@ -142,6 +128,10 @@ paths:
             $ref: '#/definitions/response.Success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/response.Error'
       tags:
@@ -167,6 +157,10 @@ paths:
             $ref: '#/definitions/response.Success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/response.Error'
       tags:
@@ -237,6 +231,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Error'
       tags:
       - Authentication
   /make-payment:
@@ -260,6 +258,10 @@ paths:
             $ref: '#/definitions/response.Success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/response.Error'
       tags:
@@ -314,6 +316,24 @@ paths:
             $ref: '#/definitions/response.Error'
       tags:
       - Authentication
+  /show-avatars:
+    get:
+      consumes:
+      - application/json
+      description: Show the list of avatars
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Avatar
   /show-cart:
     get:
       consumes:
@@ -366,6 +386,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Error'
       tags:
       - Player
   /show-powerups:
@@ -386,6 +410,57 @@ paths:
             $ref: '#/definitions/response.Error'
       tags:
       - Powerups
+  /show-reward:
+    get:
+      consumes:
+      - application/json
+      description: Shows the reward or the day of the player
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Daily Reward
+  /update-avatar:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the avatar for the player
+      parameters:
+      - description: Id of the new avatar
+        in: body
+        name: newAvatarName
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateAvatarRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Error'
+      tags:
+      - Avatar
   /update-name:
     patch:
       consumes:
@@ -407,6 +482,10 @@ paths:
             $ref: '#/definitions/response.Success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/response.Error'
       tags:
@@ -434,6 +513,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Error'
       tags:
       - Authentication
   /use-powerup:
@@ -457,6 +540,10 @@ paths:
             $ref: '#/definitions/response.Success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/response.Error'
       tags:

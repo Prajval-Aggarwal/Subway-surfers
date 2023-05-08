@@ -6,6 +6,7 @@ import (
 	"subway/server/model"
 	"subway/server/request"
 	"subway/server/response"
+	"subway/server/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stripe/stripe-go/v72"
@@ -29,7 +30,7 @@ func StripePayment(amount float64, ctx *gin.Context) (pi, pi1 *stripe.PaymentInt
 	}
 	pi, err := paymentintent.New(params)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
@@ -39,7 +40,7 @@ func StripePayment(amount float64, ctx *gin.Context) (pi, pi1 *stripe.PaymentInt
 
 	pi1, err = paymentintent.Confirm(pi.ID, params1)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
@@ -47,10 +48,10 @@ func StripePayment(amount float64, ctx *gin.Context) (pi, pi1 *stripe.PaymentInt
 	switch pi1.Status {
 	case "succeeded":
 		// Payment succeeded
-		response.ShowResponse("Success", 200, "Payment processed Successfully", "", ctx)
+		response.ShowResponse("Success", utils.SUCCESS, "Payment processed Successfully", "", ctx)
 		return
 	case "requires_payment_method":
-		response.ErrorResponse(ctx, 400, "Requires Payment Method")
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Requires Payment Method")
 		return
 	case "requires_action":
 		// Additional action required
@@ -58,11 +59,11 @@ func StripePayment(amount float64, ctx *gin.Context) (pi, pi1 *stripe.PaymentInt
 			switch pi1.NextAction.Type {
 			case "use_stripe_sdk":
 
-				response.ShowResponse("Success", 200, "Payment processed Successfully , Here is your client secret", pi1, ctx)
+				response.ShowResponse("Success", utils.SUCCESS, "Payment processed Successfully , Here is your client secret", pi1, ctx)
 			}
 		}
 	default:
-		response.ErrorResponse(ctx, 400, "Payment requires more actions")
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Payment requires more actions")
 		return
 	}
 
@@ -70,6 +71,7 @@ func StripePayment(amount float64, ctx *gin.Context) (pi, pi1 *stripe.PaymentInt
 
 }
 
+// MakePaymentService make a payment for the cart that is generated for the day
 func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest request.PaymentRequest) {
 	var paymentDetails model.Payment
 	var cartItems []model.CartItem
@@ -93,11 +95,12 @@ func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest reques
 		} else if x.ItemId == "6" {
 			totalAmount += float64(0.0133 * float64(x.Quantity))
 		} else {
-			response.ErrorResponse(ctx, 400, "Error in cart items")
+			response.ErrorResponse(ctx, utils.BAD_REQUEST, "Error in cart items")
 			return
 		}
 	}
 
+	//Giving extra discount
 	if totalAmount > 500 || totalAmount > 1000 {
 		totalAmount = float64(totalAmount) - float64(totalAmount)*0.1
 	}
@@ -109,7 +112,7 @@ func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest reques
 	//create payment record
 	err := db.CreateRecord(&paymentDetails)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	//create player payment record
@@ -117,5 +120,9 @@ func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest reques
 		P_ID:      playerId,
 		PaymentId: pi.ID,
 	}
-	db.CreateRecord(&playerPayment)
+	err = db.CreateRecord(&playerPayment)
+	if err != nil {
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
+		return
+	}
 }

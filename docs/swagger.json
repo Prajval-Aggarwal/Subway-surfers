@@ -43,6 +43,12 @@
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -68,6 +74,12 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -107,6 +119,12 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -216,6 +234,12 @@
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -252,6 +276,12 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -320,6 +350,34 @@
                             "$ref": "#/definitions/request.UpdatePasswordRequest"
                         }
                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-avatars": {
+            "get": {
+                "description": "Show the list of avatars",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Avatar"
                 ],
                 "responses": {
                     "200": {
@@ -417,6 +475,12 @@
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -442,6 +506,85 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/show-reward": {
+            "get": {
+                "description": "Shows the reward or the day of the player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Daily Reward"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-avatar": {
+            "patch": {
+                "description": "Updates the avatar for the player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Avatar"
+                ],
+                "parameters": [
+                    {
+                        "description": "Id of the new avatar",
+                        "name": "newAvatarName",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateAvatarRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -484,6 +627,12 @@
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -520,6 +669,12 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
@@ -562,6 +717,12 @@
                         "schema": {
                             "$ref": "#/definitions/response.Error"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
                     }
                 }
             }
@@ -570,10 +731,6 @@
     "definitions": {
         "request.BuyRequest": {
             "type": "object",
-            "required": [
-                "powerUpId",
-                "quantity"
-            ],
             "properties": {
                 "powerUpId": {
                     "type": "string"
@@ -585,10 +742,6 @@
         },
         "request.EndGameRequest": {
             "type": "object",
-            "required": [
-                "coinsCollected",
-                "distance"
-            ],
             "properties": {
                 "coinsCollected": {
                     "type": "integer"
@@ -600,9 +753,6 @@
         },
         "request.ForgotPassRequest": {
             "type": "object",
-            "required": [
-                "email"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -611,10 +761,6 @@
         },
         "request.LoginRequest": {
             "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -637,9 +783,6 @@
         },
         "request.PowerUpRequest": {
             "type": "object",
-            "required": [
-                "powerUpId"
-            ],
             "properties": {
                 "powerUpId": {
                     "type": "string"
@@ -648,30 +791,28 @@
         },
         "request.RegisterRequest": {
             "type": "object",
-            "required": [
-                "email",
-                "password",
-                "playerName"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
                 "password": {
-                    "type": "string",
-                    "maxLength": 16,
-                    "minLength": 8
+                    "type": "string"
                 },
                 "playerName": {
                     "type": "string"
                 }
             }
         },
+        "request.UpdateAvatarRequest": {
+            "type": "object",
+            "properties": {
+                "avatarId": {
+                    "type": "string"
+                }
+            }
+        },
         "request.UpdateNameRequest": {
             "type": "object",
-            "required": [
-                "playerName"
-            ],
             "properties": {
                 "playerName": {
                     "type": "string"
@@ -680,9 +821,6 @@
         },
         "request.UpdatePasswordRequest": {
             "type": "object",
-            "required": [
-                "password"
-            ],
             "properties": {
                 "password": {
                     "type": "string"

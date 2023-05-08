@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RegisterHandler registers the player
 // @Description	Register a player
 // @Accept			json
 // @Produce		json
@@ -23,12 +24,13 @@ func RegisterHandler(ctx *gin.Context) {
 
 	err := utils.RequestDecoding(ctx, &registerRequest)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
+
 	err = registerRequest.Validate()
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	authentication.RegisterService(ctx, registerRequest)
@@ -48,12 +50,12 @@ func LoginHandler(ctx *gin.Context) {
 
 	err := utils.RequestDecoding(ctx, &loginRequest)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	err = loginRequest.Validate()
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	authentication.LoginService(ctx, loginRequest)
@@ -64,6 +66,7 @@ func LoginHandler(ctx *gin.Context) {
 // @Produce		json
 // @Success		200	{object}	response.Success
 // @Failure		400	{object}	response.Error
+// @Failure		401	{object}	response.Error
 // @Tags			Authentication
 // @Router			/logout [delete]
 func LogoutHandler(ctx *gin.Context) {
@@ -71,7 +74,7 @@ func LogoutHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)
 	if !exists {
-		response.ErrorResponse(ctx, 401, "Unauthorised")
+		response.ErrorResponse(ctx, utils.UNAUTHORIZED, "Unauthorised")
 		return
 	}
 
@@ -83,6 +86,7 @@ func LogoutHandler(ctx *gin.Context) {
 // @Produce		json
 // @Success		200			{object}	response.Success
 // @Failure		400			{object}	response.Error
+// @Failure		401	{object}	response.Error
 // @Param			newPassword	body		request.UpdatePasswordRequest	true	"New password of the player"
 // @Tags			Authentication
 // @Router			/update-pass [patch]
@@ -92,19 +96,19 @@ func UpdatePasswordHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)
 	if !exists {
-		response.ErrorResponse(ctx, 401, "Unauthorised")
+		response.ErrorResponse(ctx, utils.UNAUTHORIZED, "Unauthorised")
 		return
 	}
 	var password request.UpdatePasswordRequest
 	err := utils.RequestDecoding(ctx, &password)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
 	err = password.Validate()
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	authentication.UpdatePasswordService(ctx, password, playerID.(string))
@@ -115,6 +119,7 @@ func UpdatePasswordHandler(ctx *gin.Context) {
 // @Produce		json
 // @Success		200		{object}	response.Success
 // @Failure		400		{object}	response.Error
+// @Failure		401	{object}	response.Error
 // @Param			newName	body		request.UpdateNameRequest	true	"New name of the player"
 // @Tags			Authentication
 // @Router			/update-name [patch]
@@ -123,19 +128,19 @@ func UpdateNameHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)
 	if !exists {
-		response.ErrorResponse(ctx, 401, "Unauthorised")
+		response.ErrorResponse(ctx, utils.UNAUTHORIZED, "Unauthorised")
 		return
 	}
 	var playerName request.UpdateNameRequest
 	err := utils.RequestDecoding(ctx, &playerName)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
 	err = playerName.Validate()
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	authentication.UpdateNameService(ctx, playerName, playerID.(string))
@@ -153,14 +158,14 @@ func ForgotPasswordHandler(ctx *gin.Context) {
 	var forgotRequest request.ForgotPassRequest
 	err := utils.RequestDecoding(ctx, &forgotRequest)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	fmt.Println("forgot", forgotRequest)
 
 	err = forgotRequest.Validate()
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
@@ -181,13 +186,13 @@ func ResetPasswordHandler(ctx *gin.Context) {
 
 	err := utils.RequestDecoding(ctx, &password)
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 
 	err = password.Validate()
 	if err != nil {
-		response.ErrorResponse(ctx, 400, err.Error())
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
 		return
 	}
 	authentication.ResetPasswordService(ctx, tokenString, password)
