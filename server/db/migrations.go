@@ -10,10 +10,8 @@ import (
 func AutoMigrateDatabase(db *gorm.DB) {
 
 	var dbVersion model.DbVersion
-	err := db.First(&dbVersion).Error
-	if err != nil {
-		fmt.Println("error: ", err)
-	}
+	db.First(&dbVersion)
+
 	fmt.Println("db version is:", dbVersion.Version)
 	if dbVersion.Version < 1 {
 		err := db.AutoMigrate(&model.Player{}, &model.DailyReward{}, &model.PlayerCoins{}, &model.Session{}, &model.PowerUp{}, &model.PlayerCoins{}, model.PlayerPowerUps{}, model.ResetSession{})

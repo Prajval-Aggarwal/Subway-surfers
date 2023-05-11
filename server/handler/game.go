@@ -10,15 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Description	Ends the game
-// @Accept			json
-// @Produce		json
-// @Success		200			{object}	response.Success
-// @Failure		400			{object}	response.Error
-// @Failure		401	{object}	response.Error
-// @Param			gameDetails	body		request.EndGameRequest	true	"Players record after game end"
-// @Tags			Game
-// @Router			/end-game [post]
+//	@Description	Ends the game
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Failure		401			{object}	response.Error
+//	@Param			gameDetails	body		request.EndGameRequest	true	"Players record after game end"
+//	@Tags			Game
+//	@Router			/end-game [post]
 func EndGameHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)

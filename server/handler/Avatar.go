@@ -10,26 +10,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Description	Show the list of avatars
-// @Accept			json
-// @Produce		json
-// @Success		200		{object}	response.Success
-// @Failure		400		{object}	response.Error
-// @Tags			Avatar
-// @Router			/show-avatars [get]
+//	@Description	Show the list of avatars
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	response.Success
+//	@Failure		400	{object}	response.Error
+//	@Tags			Avatar
+//	@Router			/show-avatars [get]
 func ShowAvatarHandler(ctx *gin.Context) {
 	avatar.ShowAvatarService(ctx)
 }
 
-// @Description	Updates the avatar for the player
-// @Accept			json
-// @Produce		json
-// @Success		200		{object}	response.Success
-// @Failure		400		{object}	response.Error
-// @Failure		401	{object}	response.Error
-// @Param			newAvatarName	body		request.UpdateAvatarRequest	true	"Id of the new avatar"
-// @Tags			Avatar
-// @Router			/update-avatar [patch]
+//	@Description	Updates the avatar for the player
+//	@Accept			json
+//	@Produce		json
+//	@Success		200				{object}	response.Success
+//	@Failure		400				{object}	response.Error
+//	@Failure		401				{object}	response.Error
+//	@Param			newAvatarName	body		request.UpdateAvatarRequest	true	"Id of the new avatar"
+//	@Tags			Avatar
+//	@Router			/update-avatar [patch]
 func UpdateAvatarHandler(ctx *gin.Context) {
 	var avatarRequest request.UpdateAvatarRequest
 	playerID, exists := ctx.Get("playerId")

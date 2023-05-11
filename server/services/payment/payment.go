@@ -73,8 +73,15 @@ func StripePayment(amount float64, ctx *gin.Context) (pi, pi1 *stripe.PaymentInt
 
 // MakePaymentService make a payment for the cart that is generated for the day
 func MakePaymentService(ctx *gin.Context, playerId string, paymentRequest request.PaymentRequest) {
+
 	var paymentDetails model.Payment
 	var cartItems []model.CartItem
+
+	if paymentDetails.CartId == "" {
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "please provide valid cart id")
+		return
+	}
+
 	db.FindById(&cartItems, paymentRequest.CartId, "cart_id")
 	paymentDetails.CartId = paymentRequest.CartId
 	paymentDetails.PaymentType = paymentRequest.PaymentType

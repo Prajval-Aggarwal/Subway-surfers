@@ -11,15 +11,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Description	Make payment
-// @Accept			json
-// @Produce		json
-// @Success		200				{object}	response.Success
-// @Failure		400				{object}	response.Error
-// @Failure		401	{object}	response.Error
-// @Param			paymentDetails	body		request.PaymentRequest	true	"payment details of the player"
-// @Tags			Payment
-// @Router			/make-payment [post]
+//	@Description	Make payment
+//	@Accept			json
+//	@Produce		json
+//	@Success		200				{object}	response.Success
+//	@Failure		400				{object}	response.Error
+//	@Failure		401				{object}	response.Error
+//	@Param			paymentDetails	body		request.PaymentRequest	true	"payment details of the player"
+//	@Tags			Payment
+//	@Router			/make-payment [post]
 func MakePaymentHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)

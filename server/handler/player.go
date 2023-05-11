@@ -9,14 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Description	Show player details
-// @Accept			json
-// @Produce		json
-// @Success		200	{object}	response.Success
-// @Failure		400	{object}	response.Error
-// @Failure		401	{object}	response.Error
-// @Tags			Player
-// @Router			/show-player [get]
+//	@Description	Show player details
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	response.Success
+//	@Failure		400	{object}	response.Error
+//	@Failure		401	{object}	response.Error
+//	@Tags			Player
+//	@Router			/show-player [get]
 func ShowPlayerDetailsHandler(ctx *gin.Context) {
 	playerID, exists := ctx.Get("playerId")
 	fmt.Println("player id is :", playerID)

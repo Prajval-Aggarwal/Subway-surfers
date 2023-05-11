@@ -11,14 +11,14 @@ import (
 )
 
 // RegisterHandler registers the player
-// @Description	Register a player
-// @Accept			json
-// @Produce		json
-// @Success		200				{object}	response.Success
-// @Failure		400				{object}	response.Error
-// @Param			playerDetails	body		request.RegisterRequest	true	"Details of the player"
-// @Tags			Authentication
-// @Router			/register-player [post]
+//	@Description	Register a player
+//	@Accept			json
+//	@Produce		json
+//	@Success		200				{object}	response.Success
+//	@Failure		400				{object}	response.Error
+//	@Param			playerDetails	body		request.RegisterRequest	true	"Details of the player"
+//	@Tags			Authentication
+//	@Router			/register-player [post]
 func RegisterHandler(ctx *gin.Context) {
 	var registerRequest request.RegisterRequest
 
@@ -37,14 +37,14 @@ func RegisterHandler(ctx *gin.Context) {
 
 }
 
-// @Description	Log in a player
-// @Accept			json
-// @Produce		json
-// @Success		200				{object}	response.Success
-// @Failure		400				{object}	response.Error
-// @Param			playerDetails	body		request.LoginRequest	true	"Details of the player"
-// @Tags			Authentication
-// @Router			/login [post]
+//	@Description	Log in a player
+//	@Accept			json
+//	@Produce		json
+//	@Success		200				{object}	response.Success
+//	@Failure		400				{object}	response.Error
+//	@Param			playerDetails	body		request.LoginRequest	true	"Details of the player"
+//	@Tags			Authentication
+//	@Router			/login [post]
 func LoginHandler(ctx *gin.Context) {
 	var loginRequest request.LoginRequest
 
@@ -61,14 +61,14 @@ func LoginHandler(ctx *gin.Context) {
 	authentication.LoginService(ctx, loginRequest)
 }
 
-// @Description	Logs out a player
-// @Accept			json
-// @Produce		json
-// @Success		200	{object}	response.Success
-// @Failure		400	{object}	response.Error
-// @Failure		401	{object}	response.Error
-// @Tags			Authentication
-// @Router			/logout [delete]
+//	@Description	Logs out a player
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	response.Success
+//	@Failure		400	{object}	response.Error
+//	@Failure		401	{object}	response.Error
+//	@Tags			Authentication
+//	@Router			/logout [delete]
 func LogoutHandler(ctx *gin.Context) {
 
 	playerID, exists := ctx.Get("playerId")
@@ -81,15 +81,15 @@ func LogoutHandler(ctx *gin.Context) {
 	authentication.LogoutService(ctx, playerID.(string))
 }
 
-// @Description	Updates the password of the player
-// @Accept			json
-// @Produce		json
-// @Success		200			{object}	response.Success
-// @Failure		400			{object}	response.Error
-// @Failure		401	{object}	response.Error
-// @Param			newPassword	body		request.UpdatePasswordRequest	true	"New password of the player"
-// @Tags			Authentication
-// @Router			/update-pass [patch]
+//	@Description	Updates the password of the player
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Failure		401			{object}	response.Error
+//	@Param			newPassword	body		request.UpdatePasswordRequest	true	"New password of the player"
+//	@Tags			Authentication
+//	@Router			/update-pass [patch]
 func UpdatePasswordHandler(ctx *gin.Context) {
 
 	//get player id from the context that is passed from middleware
@@ -114,15 +114,15 @@ func UpdatePasswordHandler(ctx *gin.Context) {
 	authentication.UpdatePasswordService(ctx, password, playerID.(string))
 }
 
-// @Description	Updates the player name of the player
-// @Accept			json
-// @Produce		json
-// @Success		200		{object}	response.Success
-// @Failure		400		{object}	response.Error
-// @Failure		401	{object}	response.Error
-// @Param			newName	body		request.UpdateNameRequest	true	"New name of the player"
-// @Tags			Authentication
-// @Router			/update-name [patch]
+//	@Description	Updates the player name of the player
+//	@Accept			json
+//	@Produce		json
+//	@Success		200		{object}	response.Success
+//	@Failure		400		{object}	response.Error
+//	@Failure		401		{object}	response.Error
+//	@Param			newName	body		request.UpdateNameRequest	true	"New name of the player"
+//	@Tags			Authentication
+//	@Router			/update-name [patch]
 func UpdateNameHandler(ctx *gin.Context) {
 
 	playerID, exists := ctx.Get("playerId")
@@ -146,14 +146,14 @@ func UpdateNameHandler(ctx *gin.Context) {
 	authentication.UpdateNameService(ctx, playerName, playerID.(string))
 }
 
-// @Description	Forgot password
-// @Accept			json
-// @Produce		json
-// @Success		200			{object}	response.Success
-// @Failure		400			{object}	response.Error
-// @Param			playerEmail	body		request.ForgotPassRequest	true	"Players registers email"
-// @Tags			Authentication
-// @Router			/forgot-password [post]
+//	@Description	Forgot password
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Param			playerEmail	body		request.ForgotPassRequest	true	"Players registers email"
+//	@Tags			Authentication
+//	@Router			/forgot-password [post]
 func ForgotPasswordHandler(ctx *gin.Context) {
 	var forgotRequest request.ForgotPassRequest
 	err := utils.RequestDecoding(ctx, &forgotRequest)
@@ -172,14 +172,14 @@ func ForgotPasswordHandler(ctx *gin.Context) {
 	authentication.ForgotPassService(ctx, forgotRequest)
 }
 
-// @Description	Reset password
-// @Accept			json
-// @Produce		json
-// @Success		200			{object}	response.Success
-// @Failure		400			{object}	response.Error
-// @Param			NewPassword	body		request.UpdatePasswordRequest	true	"Players new password"
-// @Tags			Authentication
-// @Router			/reset-password [post]
+//	@Description	Reset password
+//	@Accept			json
+//	@Produce		json
+//	@Success		200			{object}	response.Success
+//	@Failure		400			{object}	response.Error
+//	@Param			NewPassword	body		request.UpdatePasswordRequest	true	"Players new password"
+//	@Tags			Authentication
+//	@Router			/reset-password [post]
 func ResetPasswordHandler(ctx *gin.Context) {
 	tokenString := ctx.Request.URL.Query().Get("token")
 	var password request.UpdatePasswordRequest

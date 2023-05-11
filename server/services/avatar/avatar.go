@@ -74,6 +74,10 @@ func UnlockAvtar(ctx *gin.Context, playerId string, playerPoints int64) {
 // UpdateAvatarService updates the current avatar for th player
 func UpdateAvatarService(ctx *gin.Context, playerId string, avatarRequest request.UpdateAvatarRequest) {
 
+	if avatarRequest.AvatarId == "" {
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Provide avatar id")
+		return
+	}
 	// Change the current avatar of the player and check whether that avatar is unlocked or not
 	var exists bool
 	var playerDetails model.Player

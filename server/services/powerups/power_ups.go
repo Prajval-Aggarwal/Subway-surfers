@@ -29,6 +29,10 @@ func ShowPowerUpsService(ctx *gin.Context) {
 func UsePowerUpService(ctx *gin.Context, playerID string, powerupRequest request.PowerUpRequest) {
 	query := "SELECT * FROM player_power_ups WHERE p_id=? AND power_up_id=?;"
 	var playerPowerup model.PlayerPowerUps
+	if powerupRequest.PowerUp_Id == "" {
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Please provide valid id")
+		return
+	}
 	err := db.RawQuery(query, &playerPowerup, playerID, powerupRequest.PowerUp_Id)
 	if err != nil {
 		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
@@ -62,6 +66,12 @@ func BuyPowerupService(ctx *gin.Context, playerId string, BuyRequest request.Buy
 	var playerCoins model.PlayerCoins
 	var playerPowerups model.PlayerPowerUps
 	var exists bool
+
+	if BuyRequest.PowerUp_Id == "" {
+		response.ErrorResponse(ctx, utils.BAD_REQUEST, "Please provide valid id")
+		return
+	}
+
 	err := db.FindById(&powerUp, BuyRequest.PowerUp_Id, "power_up_id")
 	if err != nil {
 		response.ErrorResponse(ctx, utils.BAD_REQUEST, err.Error())
